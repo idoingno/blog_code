@@ -18,18 +18,16 @@ autoGroup-3: 布局
 > - auto：设置列宽或行高自动等于它的内容的宽度或高度，
 > - %：将列或行调整为它的容器宽度或高度的百分比，
 
-
 ### grid-column-gap 、 grid-row-gap 、 grid-gap
 
 - **grid-column-gap** 创建多列之间的间距
 - **grid-row-gap** 创建行之间的间距
 - **grid-gap** `grid-row-gap` 和 `grid-column-gap` 的简写属性, 如果 `grid-gap` 只有一个值，那么这个值表示行与行之间、列与列之间的间距均为这个值。 如果有两个值，那么第一个值表示行间距，第二个值表示列间距。
 
-### justify-items 和  align-items
+### justify-items 和 align-items
 
 - 对网格容器使用 `justify-items` 使它们一次性沿水平轴对齐, 它会将网格中**所有**的网格项按所设置的方式对齐。
 - 对网格容器使用 `align-items` 属性可以让网格中所有的网格项沿竖直方向对齐。
-
 
 ### grid-template-areas
 
@@ -51,9 +49,8 @@ grid-area: footer;
 // 如果网格中没有定义区域模板，也可以为它添加一个模板
 grid-area: 1/1/2/4;
 ```
+
 > grid-area: horizontal line to start at / vertical line to start at / horizontal line to end at / vertical line to end at;
-
-
 
 ## 网格项属性
 
@@ -77,7 +74,6 @@ grid-area: 1/1/2/4;
 - end：使内容在单元格右侧对齐，
 
 设置网格项沿竖直方向的对齐方式.（`justify-self`属性的属性值同样也可用于这个属性）
-
 
 ## 其他属性
 
