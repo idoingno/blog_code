@@ -377,3 +377,53 @@ whatIsInAName(
   { last: "Capulet" }
 );
 ```
+
+## 短线连接格式
+
+将字符串转换为短线连接格式。 短线连接格式是小写单词全部小写并以破折号分隔。
+
+```js
+// 利用正则匹配
+function spinalCase(str) {
+  var regex = /\s+|_+/g;
+
+  // Replace low-upper case to low-space-uppercase
+  str = str.replace(/([a-z])([A-Z])/g, "$1 $2");
+
+  // Replace space and underscore with -
+  return str.replace(regex, "-").toLowerCase();
+}
+
+function spinalCase(str) {
+  return str
+    .split(/\s|_|(?=[A-Z])/)
+    .join("-")
+    .toLowerCase();
+}
+
+// test here
+spinalCase("This Is Spinal Tap");
+```
+
+## 求斐波那契数列中的奇数之和
+
+斐波那契数列中，第一和第二个数字都是 1。 后面的每个数字由之前两数相加得出。 斐波那契数列的前六个数字分别为：1、1、2、3、5、8。 （求奇数之和）
+
+```js
+function sumFibs(num) {
+  let prevNumber = 0;
+  let currNumber = 1;
+  let result = 0;
+  while (currNumber <= num) {
+    if (currNumber % 2 !== 0) {
+      result += currNumber;
+    }
+    currNumber += prevNumber;
+    prevNumber = currNumber - prevNumber;
+  }
+
+  return result;
+}
+
+sumFibs(4);
+```
