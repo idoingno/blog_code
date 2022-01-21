@@ -427,3 +427,44 @@ function sumFibs(num) {
 
 sumFibs(4);
 ```
+
+## 数组扁平化
+
+嵌套数组扁平化成一维数组。
+
+```js
+function steamrollArray(arr) {
+  const flattenedArray = [];
+  // Loop over array contents
+  for (let i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) {
+      // Recursively flatten entries that are arrays
+      //  and push into the flattenedArray
+      flattenedArray.push(...steamrollArray(arr[i]));
+    } else {
+      // Copy contents that are not arrays
+      flattenedArray.push(arr[i]);
+    }
+  }
+  return flattenedArray;
+}
+
+// test here
+steamrollArray([1, [2], [3, [[4]]]]);
+```
+
+## 凯撒密码
+
+凯撒密码（ **Caesar cipher**）是最简单且最广为人知的密码（ciphers），也被称为移位密码（shift cipher）。 在移位密码中，明文中的字母通过按照一个固定数目进行偏移后被替换成新的字母。
+
+**ROT13** 是一个被广泛使用的加密技术，明文中的所有字母都被移动 13 位。 也就是， `A ↔ N`，`B ↔ O` 等等。
+
+```js
+function rot13(str) {
+  // LBH QVQ VG!
+  return str.replace(/[A-Z]/g, (L) =>
+    String.fromCharCode((L.charCodeAt(0) % 26) + 65)
+  );
+}
+rot13("SERR PBQR PNZC");
+```
