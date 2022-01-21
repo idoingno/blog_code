@@ -523,6 +523,8 @@ JSON.stringify(b); // ""[2,3]""
 
 [2] 类型转换：[You Don't Know JS: Types & Grammar](https://github.com/weiqinl/You-Dont-Know-JS-CN/blob/master/types%20%26%20grammar/ch4.md#/)
 
+[3] ES 标准: [sec-abstract-operations](https://tc39.es/ecma262/#/sec-toprimitive)
+
 ## var 、let、const
 
 - ES6 中引入了一个名为 let 的关键字，这是对 JavaScript 的一次重大更新，以解决与 var 关键字有关的潜在问题。同名的变量只能声明一次。
