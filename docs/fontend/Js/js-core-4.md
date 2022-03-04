@@ -3,6 +3,72 @@ title: 其它
 autoGroup-1: JS 核心
 ---
 
+## new 模拟实现
+
+`new` **运算符** 创建一个用户定义的对象类型的实例或具有构造函数的内置对象的实例。
+
+`new` 关键字会进行如下的操作：
+
+- 创建一个空的简单 JavaScript 对象（即{}）；
+- 为新创建的对象（{}）添加属性 **proto**，将该属性链接至构造函数的原型对象；
+- 将新创建的对象（{}）作为 this 的上下文 ；
+- 如果该函数没有返回对象，则返回 this。
+
+```js
+function Car() {}
+var car1 = new Car();
+var car2 = new Car();
+
+console.log(car1.color); // undefined
+
+Car.prototype.color = "original color";
+console.log(car1.color); // original color
+
+car1.color = "black";
+console.log(car1.color); // black
+
+console.log(car1.__proto__.color); //original color
+console.log(car2.__proto__.color); //original color
+console.log(car1.color); // black
+console.log(car2.color); // original color
+```
+
+```js
+function Car(name, color) {
+  this.name = name;
+  this.color = color;
+
+  this.size = 99;
+}
+
+Car.prototype.strength = 60;
+
+Car.prototype.drive = function () {
+  console.log(this.name + " is Driving");
+};
+
+function Factory() {
+  // 新建了一个对象 obj
+  var obj = {};
+  // 取出arguments 的第一个参数，这个就是要传入的构造函数
+  var Constructor = [].shift.call(arguments);
+  // 让obj 的原型指向构造函数，obj 就可以访问到构造函数原型中的属性
+  obj.__proto__ = Constructor.prototype;
+  // 改变构造函数 this 的指向到新建的对象，obj 就可以访问到构造函数中的属性
+  var ret = Constructor.apply(obj, arguments);
+
+  return typeof ret === "object" ? ret : obj;
+}
+
+var car = Factory(Car, "sun", "red");
+
+console.log(car.name); // sun
+console.log(car.size); // 99
+console.log(car.strength); // 60
+
+car.drive(); // sun is Driving
+```
+
 ## var 、let、const
 
 - ES6 中引入了一个名为 let 的关键字，这是对 JavaScript 的一次重大更新，以解决与 var 关键字有关的潜在问题。同名的变量只能声明一次。
@@ -239,4 +305,84 @@ Array.prototype.myFilter = function (callback) {
 var new_s = s.myFilter(function (item) {
   return item % 2 === 1;
 });
+```
+
+## ~ 运算符
+
+`~` 运算符即字位操作“非”，作为强制类型转换。 `~x` 大致等于`-(x+1)`
+
+```js
+~42; // -(42+1) ===> -43
+```
+
+在`-(x+1)` 中唯一能够得到 0（或者严格说是-0）的`x`值是-1。-1 是一个“哨位值”， 赋予特殊含义。
+**JavaScript** 中字符串的`indexOf(..)`方法也遵守这一惯例，在字符串中搜索指定的子字符串，如果找到就返回子字符串所在的位置（从 0 开始），否则返回`-1`
+
+```js
+var a = "Hello World";
+// true
+if (a.indexOf("lo") > 0) {
+  // 找到匹配
+}
+
+// true
+if (a.indexOf("lo") != -1) {
+  // 找到匹配
+}
+
+~a.indexOf("lo"); // -4  <=== 真值
+~a.indexOf("ol"); // 0  <=== 假值
+
+// 如果返回-1 ~将其转化为假值0.其他区情况一律转为真值
+```
+
+## + 运算符
+
+`+` 运算符会将操作数显式强制类型转化为数字。也可以显式将日期转化为数字。
+
+```js
+var a = "3.14";
+console.log(+a);
+
+var d = new Date();
+console.log(+d);
+```
+
+## !! 运算符
+
+`!!` 运算符显式强制类型转化为布尔值。
+
+```js
+var a = "0";
+var b = [];
+var c = {};
+var d = "";
+var e = 0;
+var f = null;
+var g;
+
+!!a; // true
+!!b; // true
+!!c; // true
+
+!!d; // false
+!!e; // false
+!!f; // false
+!!g; // false
+```
+
+## || 运算符 和 && 运算符
+
+它们的返回值是两个操作数中的一个（且仅一个）。即选择两个操作数中的一个，然后返回它的值。
+
+```js
+var a = 42;
+var b = "abc";
+var c = null;
+
+a || b; // 42
+a && b; // "abc"
+
+c || b; // "abc"
+c && b; // null
 ```

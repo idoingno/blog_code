@@ -24,6 +24,73 @@ autoGroup-1: JS 核心
   - 可以使用常量 `Number.MAX_VALUE` 和 `Number.MIN_VALUE`
   - 也可以通过 `Number.isSafeInteger()` 方法还有 `Number.MAX_SAFE_INTEGER` 和 `Number.MIN_SAFE_INTEGER` 来检查值是否在双精度浮点数的取值范围内
 
+```js
+Number.isSafeInteger(Number.MAX_SAFE_INTEGER); // true
+Number.isSafeInteger(Math.pow(2, 53)); // false
+Number.isSafeInteger(Math.pow(2, 53) - 1); // true
+
+// 可以为 ES6 之前的版本 polyfill Number.isSafeInteger()
+if (!Number.isSafeInteger) {
+  Number.isSafeInteger = function (num) {
+    // （ES6方法）检测是否是整数
+    return Number.isInteger(num) && Math.abs(num) <= Number.MAX_SAFE_INTEGER;
+  };
+}
+```
+
+`NaN` 不是数字的数字，但仍然是数字类型。它很特殊，与自身不相等，是唯一一个非自反。（即 `x === x` 不成立）
+当使用内建的全局工具函数 `isNaN` 判断一个值是否是 `NaN`，会有一个严重的缺陷。
+
+```js
+isNaN(1 / "a"); // true
+isNaN("a"); // true
+```
+
+ES6 之后可以使用工具函数 `Number.isNaN(...)`
+
+```js
+// ES6之前的浏览器 ployfill
+if (!Number.isNaN) {
+  Number.isNaN = function (n) {
+    return typeof n === "number" && window.isNaN(n);
+  };
+}
+
+Number.isNaN(1 / "a"); // true
+Number.isNaN("a"); // false
+
+// 利用 NaN 不等于自身可以实现
+if (!Number.isNaN) {
+  Number.isNaN = function (n) {
+    return n !== n;
+  };
+}
+```
+
+ES6 之后新加入一个工具方法 `Object.is(...)` 来判断两个值是否相等
+
+```js
+Object.is(1 / "a", NaN); // true
+Object.is(-1 * 0, -0); // true
+Object.is(-0, 0); // false
+
+// ES6之前的浏览器 ployfill
+if (Object.is) {
+  Object.is = function (v1, v2) {
+    // 判断是否是-0
+    if (v1 === 0 && v2 === 0) {
+      return 1 / v1 === 1 / v2;
+    }
+    // 判断是否是NaN
+    if (v1 !== v1) {
+      return v2 !== v2;
+    }
+    // 其他
+    return v1 === v2;
+  };
+}
+```
+
 ### BigInt 类型
 
 BigInt 类型是 JavaScript 中的一个基础的数值类型，可以用任意精度表示整数。使用 BigInt，您可以安全地存储和操作大整数，甚至可以超过数字的安全整数限制。BigInt 是通过在整数末尾附加 n 或调用构造函数来创建的。
@@ -519,8 +586,8 @@ JSON.stringify(b); // ""[2,3]""
 
 ## 文档
 
-[1] 数据类型：[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Data_structures)
+【1】 数据类型：[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Data_structures)
 
-[2] 类型转换：[You Don't Know JS: Types & Grammar](https://github.com/weiqinl/You-Dont-Know-JS-CN/blob/master/types%20%26%20grammar/ch4.md#/)
+【2】 类型转换：[You Don't Know JS: Types & Grammar](https://github.com/weiqinl/You-Dont-Know-JS-CN/blob/master/types%20%26%20grammar/ch4.md#/)
 
-[3] ES 标准：[Sec-abstract-operations](https://tc39.es/ecma262/#/sec-toprimitive)
+【2】 ES 标准：[Sec-abstract-operations](https://tc39.es/ecma262/#/sec-toprimitive)
