@@ -1,5 +1,5 @@
 ---
-title: this和对象委托
+title: This和对象委托
 autoGroup-1: JS 核心
 ---
 

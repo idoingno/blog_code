@@ -3,13 +3,400 @@ title: 其它
 autoGroup-1: JS 核心
 ---
 
+## ES6+
+
+JavaScript 标准的官方名称是“ECMAScript”（简称“ES”），直到最近都是用有序数字来标识版本的，例如“5”表示“第 5 版”。
+
+下一个 JavaScript 版本（发布日期从 2013 年拖到 2014 年，然后又到 2015 年）标签，之前的共识显然是 ES6。但是，在 ES6 规范发展后期，出现了这样的方案：有人建议未来的版本应该改成基于年份，比如 ES2016（也就是 ES7）来标示在 2016 年结束之前敲定的任何版本的规范。尽管有异议，但比起后来提出的方案 ES2015，很可能保持统治地位的版本命名仍是 ES6。而 ES2016 可能会采用新的基于年份的命名方案。
+
+### let、const
+
+- ES6 中引入了一个名为 let 的关键字，这是对 JavaScript 的一次重大更新，以解决与 var 关键字有关的潜在问题。同名的变量只能声明一次。
+- const 关键字声明只读变量。始终使用 const 关键字命名不想重新分配的变量。
+  > Tips：使用 `const` 分配给变量的对象（包括数组和函数）仍然是可变的, 使用 const 声明只能防止变量标识符的重新分配。这个值并没有因为 `const` 被锁定或者不可变，只是赋值本身不可变。
+
+```js
+{
+  const a = [1, 2, 3];
+  a.push(4);
+  console.log(a); // [1,2,3,4]
+  a = 42; // TypeError!
+}
+```
+
+### spread/rest
+
+`ES6` 引入了一个新的运算符 `...`，通常称为 `spread` 或 `rest`（**展开或收集**）运算符，取决于它在哪 / 如何使用。
+
+`spread` 展开操作符，可以展开数组以及需要多个参数或元素的表达式。
+
+```js
+var a = [2, 3, 4];
+var b = [1, ...a, 5];
+console.log(b); // [1,2,3,4,5]
+```
+
+> `...arr` 返回一个解压的数组。展开操作符只能够在函数的参数中或者数组中使用。
+
+`rest` 操作符可以用于创建有一个变量来接受多个参数的函数。 这些参数被储存在一个可以在函数内部读取的数组中。
+
+```js
+// foo(..) 函数声明中的 ...args 通常称为“rest 参数”，因为这里是在收集其余的参数。
+const func = (...args) => {
+  console.log(args.length);
+};
+
+foo(1, 2, 3, 4, 5); // [1,2,3,4,5]
+```
+
+### 默认参数值
+
+JavaScript 最常见的一个技巧就是关于设定函数参数默认值的。
+
+```js
+function foo(x = 11, y = 31) {
+  console.log(x + y);
+}
+foo(); // 42
+foo(5, 6); // 11
+foo(0, 42); // 42
+foo(5); // 36
+foo(5, undefined); // 36 <-- 丢了undefined
+foo(5, null); // 5 <-- null被强制转换为0
+foo(undefined, 6); // 17 <-- 丢了undefined
+foo(null, 6); // 6 <-- null被强制转换为0
+```
+
+### 解构赋值
+
+解构赋值是 `ES6` 引入的新语法，用来从数组和对象中提取值，并优雅地对变量进行赋值。
+
+```js
+const user = { name: "John Doe", age: 34 };
+const { name, age } = user;
+// 这里的语法模式是 souce: target（或者说是 value:variable-alias)。
+const { name: userName, age: userAge } = user;
+
+var x = 10,
+  y = 20;
+[y, x] = [x, y];
+console.log(x, y); // 20 10
+
+// 嵌套解构
+var a1 = [1, [2, 3, 4], 5];
+var o1 = { x: { y: { z: 6 } } };
+var [a, [b, c, d], e] = a1;
+var {
+  x: {
+    y: { z: w },
+  },
+} = o1;
+console.log(a, b, c, d, e); // 1 2 3 4 5
+console.log(w); // 6
+```
+
+### 计算属性名
+
+ES6 对对象字面定义新增了一个语法，用来支持指定一个要计算的表达式，其结果作为属性名。
+
+```js
+// 对象字面定义属性名位置的 [ .. ] 中可以放置任意合法表达式。
+var prefix = "user_";
+var o = {
+ baz: function(..){ .. },
+ [ prefix + "foo" ]: function(..){ .. },
+ [ prefix + "bar" ]: function(..){ .. }
+
+};
+
+// 计算属性名最常见的用法可能就是和 Symbols 共同使用
+var o = {
+ [Symbol.toStringTag]: "really cool thing",
+};
+
+// Symbol.toStringTag 是一个特殊的内置值，用 [ .. ] 语法为其求值，所以可以把值 "really cool thing" 赋给这个特殊的属性名。
+
+// 计算属性名也可以作为简洁方法或者简洁生成器的名称出现：
+var o = {
+ ["f" + "oo"]() { .. } // 计算出的简洁方法
+ *["b" + "ar"]() { .. } // 计算出的简洁生成器
+};
+```
+
+### 模板字面量
+
+ES6 引入了一个新的字符串字面量，使用 **_`_** 作为界定符。这样的字符串字面值支持嵌入基本的字符串插入表达式，会被自动解析和求值。
+
+```js
+var name = "Kyle";
+var greeting = `Hello ${name}!`;
+console.log(greeting); // "Hello Kyle!"
+console.log(typeof greeting); // "string"
+```
+
+### 箭头函数
+
+箭头函数定义包括一个参数列表（零个或多个参数，如果参数个数不是一个的话要用 `( .. )`包围起来），然后是标识 `=>`，函数体放在最后
+
+`=>` 箭头函数的主要设计目的就是以特定的方式改变 `this` 的行为特性
+
+```js
+var f1 = () => 12;
+var f2 = (x) => x * 2;
+var f3 = (x, y) => {
+  var z = x * 2 + y;
+  y++;
+  x *= 3;
+  return (x + y + z) / 2;
+};
+```
+
+> 箭头函数支持普通函数参数的所有功能，包括默认值、解构、`rest` 参数，等等。
+
+### for..of 循环
+
+`for..of` 循环的值必须是一个 `iterable`，或者说它必须是可以转换 / 封箱到一个 `iterable` 对象的值。`iterable` 就是一个能够产生迭代器供循环使用的对象。
+
+```js
+// for..of 和 for..in 其中的区别
+var a = ["a", "b", "c", "d", "e"];
+
+for (var idx in a) {
+  // 0 1 2 3 4
+  console.log(idx);
+}
+
+for (var val of a) {
+  // "a" "b" "c" "d" "e"
+  console.log(val);
+}
+```
+
+在底层，`for..of` 循环向 `iterable` 请求一个迭代器，然后反复调用这个迭代器把它产生的值赋给循环迭代变量。
+
+`JavaScript` 中默认为（或提供）`iterable` 的标准内建值包括：
+
+- Arrays
+- Strings
+- Generators
+- Collections / TypedArrays
+
+> 默认情况下平凡对象并不适用 `for..of` 循环。因为它们并没有默认的迭代器，这是有意设计的特性，而不是错误。
+
+### 正则表达式
+
+(1) **Unicode 标识**
+
+ES6+ 正则表达式新的 `u` 标识，这个标识会为表达式打开 `Unicode` 匹配。
+
+JavaScript 字符串通常被解释成 16 位字符序列，这些字符对应基本多语言平面中的字符。但还有很多 UTF-16 字符在这个范围之外，所以字符串中还可能包含这些多字节字符。
+
+在 `ES6` 之前，正则表达式只能基于 `PMB` 字符匹配，这意味着那些扩展字符会被当作两个独立的字符来匹配。通常这不是理想的做法。所以，在 `ES6` 中，`u` 标识符表示正则表达式用 `Unicode（UTF-16）`字符来解释处理字符串，把这样的扩展字符当作单个实体来匹配。 [ES2015 中的 Unicode 正则表达式](https://mathiasbynens.be/notes/es6-unicode-regex)
+
+```js
+//  音乐符号 （高音符号）是 Unicode 码点为 U+1D11E（0x1D11E）
+/𝄞/.test("𝄞-clef"); // true
+
+/^.-clef/.test("𝄞-clef"); // false
+/^.-clef/u.test("𝄞-clef"); // true
+```
+
+(2) **定点标识**
+
+`ES6` 正则表达式中另外一个新增的标签模式是 `y`，通常称为“`定点（sticky）模式`”。定点主要是指在正则表达式的起点有一个虚拟的锚点，只从正则表达式的 `lastIndex` 属性指定的位置开始匹配。
+
+- 没有定点模式的
+
+```js
+//
+var re1 = /foo/,
+  str = "++foo++";
+
+re1.lastIndex; // 0
+re1.test(str); // true
+re1.lastIndex; // 0--没有更新
+
+re1.lastIndex = 4;
+re1.test(str); // true--被忽略的lastIndex
+re1.lastIndex; // 4--没有更新
+
+// test(..) 并不关心 lastIndex 的值，总是从输入字符串的起始处开始执行匹配。
+// 模式并没有起始锚点 ^，对 "foo" 的搜索从整个字符串向前寻找匹配。
+// test(..) 不更新 lastIndex。
+```
+
+- 定点模式正则表达式
+
+```js
+var re2 = /foo/y, // <-- 注意定点标识y
+  str = "++foo++";
+re2.lastIndex; // 0
+re2.test(str); // false--0处没有找到"foo"
+re2.lastIndex; // 0
+
+re2.lastIndex = 2;
+re2.test(str); // true
+re2.lastIndex; // 5--更新到前次匹配之后位置
+re2.test(str); // false
+re2.lastIndex; // 0--前次匹配失败后重置
+
+// test(..) 使用 lastIndex 作为 str 中精确而且唯一的位置寻找匹配。不会向前移动去寻找匹配——要么匹配位于 lastIndex 位置上，要么就没有匹配。
+// 如果匹配成功，test(..) 会更新 lastIndex 指向紧跟匹配内容之后的那个字符。如果匹配失败，test(..) 会把 lastIndex 重置回 0。
+```
+
+一般的没有用 `^` 限制输入起始点匹配的非定点模式可以自由地在输入字符串中向前移动寻找匹配内容。而定点模式则限制了模式只能从 `lastIndex` 开始匹配。
+
+(3) **正则表达式 flags**
+
+在 `ES6` 之前，如果想要通过检查一个正则表达式对象来判断它应用了那些标识，需要把它从 `source` 属性的内容中解析出来
+
+```js
+// ES6 之前
+var re = /foo/gi;
+re.toString(); // "/foo/ig"
+var flags = re.toString().match(/\/([gim]*)$/)[1];
+flags; // "ig"
+
+// ES6 之后
+var re = /foo/gi;
+re.flags; // "gi"
+```
+
+### 数字字面量扩展
+
+新的 ES6 数字字面量形式
+
+```js
+var dec = 42,
+  oct = 0o52, // 或者0O52 :(
+  hex = 0x2a, // 或者0X2a :/
+  bin = 0b101010; // 或者0B101010 :/
+
+// 唯一合法的小数形式是十进制的。八进制、十六进制和二进制都是整数形式。
+// 这些形式的字符串表示都可以强制类型转换 / 变换成相应的数字值：
+
+Number("42"); // 42
+Number("0o52"); // 42
+Number("0x2a"); // 42
+
+// 反向转换
+var a = 42;
+a.toString(); // "42"--也可以用a.toString( 10 )
+a.toString(8); // "52"
+a.toString(16); // "2a"
+a.toString(2); // "101010
+```
+
+### 符号
+
+`ES6` 为 `JavaScript` 引入了一个新的原生类型：`symbol`, 和其他原生类型不一样，`symbol` 没有字面量形式。
+
+```js
+var sym = Symbol("some optional description");
+typeof sym; // "symbol"
+
+sym.toString(); // "Symbol(some optional description)"
+
+// 构造一个 symbol 值的装箱封装对象形式
+sym instanceof Symbol; // false
+var symObj = Object(sym);
+symObj instanceof Symbol; // true
+symObj.valueOf() === sym; // true
+```
+
+- 不能也不应该对 `Symbol(..)` 使用 `new`。它并不是一个构造器，也不会创建一个对象。
+- 传给 `Symbol(..)` 的参数是可选的。如果传入了的话，应该是一个为这个 `symbol` 的用途给出用户友好描述的字符串。
+- `typeof` 的输出是一个新的值 `("symbol")`，这是识别 `symbol` 的首选方法。
+
+符号的主要意义是创建一个类 ( 似 ) 字符串的不会与其他任何值冲突的值。
+
+```js
+// 使用一个符号作为事件名的常量
+const EVT_LOGIN = Symbol("event.login");
+
+evthub.listen(EVT_LOGIN, function (data) {
+  // ..
+});
+
+// 这里的好处是 EVT_LOGIN 持有一个不可能与其他值（有意或无意）重复的值，所以这里分发或处理的事件不会有任何混淆。
+```
+
+可以在对象中直接使用符号作为**属性名 / 键值**，比如用作一个特殊的想要作为隐藏或者元属性的属性。
+
+```js
+// 实现了单例（singleton）模式的模块，它只允许自己被创建一次
+const INSTANCE = Symbol( "instance" );
+
+function HappyFace() {
+ if (HappyFace[INSTANCE]) return HappyFace[INSTANCE];
+ function smile() { .. }
+ return HappyFace[INSTANCE] = {
+    smile: smile
+ };
+}
+
+var me = HappyFace(), you = HappyFace();
+
+me === you; // true
+
+me.smile()
+
+// 这里的 INSTANCE 符号值是一个特殊的、几乎隐藏的、类似元属性的属性，静态保存在 HappeyFace() 函数对象中。
+```
+
+- 符号注册
+
+符号注册为这些值提供了全局存储，可以通过全局符号注册（global symbol registry）创建这些符号值。
+
+```js
+const EVT_LOGIN = Symbol.for( "event.login" );
+console.log( EVT_LOGIN ); // Symbol(event.login)
+
+function HappyFace() {
+ const INSTANCE = Symbol.for( "instance" );
+ if (HappyFace[INSTANCE]) return HappyFace[INSTANCE];
+ // ..
+ return HappyFace[INSTANCE] = { .. };
+}
+```
+
+`Symbol.for(..)` 在全局符号注册表中搜索，来查看是否有描述文字相同的符号已经存在，如果有的话就返回它。如果没有的话，会新建一个并将其返回。换句话说，全局注册表把符号值本身根据其描述文字作为单例处理。
+
+可以使用 `Symbol.keyFor(..)` 提取注册符号的描述文本（键值）：
+
+```js
+var s = Symbol.for("something cool");
+var desc = Symbol.keyFor(s);
+console.log(desc); // "something cool"
+
+// 再次从注册中取得符号
+var s2 = Symbol.for(desc);
+s2 === s; // true
+```
+
+- 作为对象属性的符号
+
+如果把符号用作对象的**属性 / 键值**，那么它会以一种特殊的方式存储，使得这个属性不出现在对这个对象的一般属性枚举中
+
+```js
+var o = {
+  foo: 42,
+  [Symbol("bar")]: "hello world",
+  baz: true,
+};
+Object.getOwnPropertyNames(o); // [ "foo","baz" ]
+
+// 要取得对象的符号属性：
+Object.getOwnPropertySymbols(o); // [ Symbol(bar) ]
+```
+
 ## new 模拟实现
 
 `new` **运算符** 创建一个用户定义的对象类型的实例或具有构造函数的内置对象的实例。
 
 `new` 关键字会进行如下的操作：
 
-- 创建一个空的简单 JavaScript 对象（即{}）；
+- 创建一个空的简单 `JavaScript` 对象（即`{}`）；
 - 为新创建的对象（{}）添加属性 **proto**，将该属性链接至构造函数的原型对象；
 - 将新创建的对象（{}）作为 this 的上下文 ；
 - 如果该函数没有返回对象，则返回 this。
@@ -69,12 +456,6 @@ console.log(car.strength); // 60
 car.drive(); // sun is Driving
 ```
 
-## var 、let、const
-
-- ES6 中引入了一个名为 let 的关键字，这是对 JavaScript 的一次重大更新，以解决与 var 关键字有关的潜在问题。同名的变量只能声明一次。
-- const 关键字声明只读变量。始终使用 const 关键字命名不想重新分配的变量。
-  > Tips：使用 `const` 分配给变量的对象（包括数组和函数）仍然是可变的, 使用 const 声明只能防止变量标识符的重新分配。
-
 ## 转义字符
 
 ```
@@ -108,32 +489,6 @@ Math.floor(Math.random() * (max - min + 1)) + min
 ## 冻结函数
 
 `Object.freeze` 任何更改对象的尝试都将被拒绝
-
-## rest 操作符与函数参数
-
-ES6 推出了用于函数参数的 rest 操作符帮助我们创建更加灵活的函数。 rest 操作符可以用于创建有一个变量来接受多个参数的函数。 这些参数被储存在一个可以在函数内部读取的数组中。
-
-```js
-const func = (...args) => {
-  console.log(args.length);
-};
-```
-
-## spread 运算符展开数组项
-
-ES6 引入了展开操作符，可以展开数组以及需要多个参数或元素的表达式。
-
-> `...arr` 返回一个解压的数组。展开操作符只能够在函数的参数中或者数组中使用。
-
-## 解构赋值
-
-解构赋值是 ES6 引入的新语法，用来从数组和对象中提取值，并优雅地对变量进行赋值。
-
-```js
-const user = { name: "John Doe", age: 34 };
-const { name, age } = user;
-const { name: userName, age: userAge } = user;
-```
 
 ## class 语法定义构造函数
 
@@ -393,29 +748,27 @@ c && b; // null
 
 ```js
 function discount(discount) {
-    return (price) => {
-        return price * discount;
-    }
+  return (price) => {
+    return price * discount;
+  };
 }
 const tenPercentDiscount = discount(0.1);
-tenPercentDiscount(500)
+tenPercentDiscount(500);
 ```
 
 用于多参数函数的“高级”柯里化实现
 
 ```js
 function curry(func) {
-
   return function curried(...args) {
     if (args.length >= func.length) {
       return func.apply(this, args);
     } else {
-      return function(...args2) {
+      return function (...args2) {
         return curried.apply(this, args.concat(args2));
-      }
+      };
     }
   };
-
 }
 
 function sum(a, b, c) {
@@ -424,7 +777,7 @@ function sum(a, b, c) {
 
 let curriedSum = curry(sum);
 
-console.log( curriedSum(1, 2, 3) ); // 6，仍然可以被正常调用
-console.log( curriedSum(1)(2,3) ); // 6，对第一个参数的柯里化
-console.log( curriedSum(1)(2)(3) ); // 6，全柯里化
+console.log(curriedSum(1, 2, 3)); // 6，仍然可以被正常调用
+console.log(curriedSum(1)(2, 3)); // 6，对第一个参数的柯里化
+console.log(curriedSum(1)(2)(3)); // 6，全柯里化
 ```
