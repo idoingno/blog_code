@@ -7,7 +7,9 @@
   "private": true,
   "scripts": {
     "dev": "vuepress dev docs --temp .temp",
-    "build": "vuepress build docs"
+    "build": "vuepress build docs",
+    "predeploy": "pnpm run build", 
+    "deploy": "gh-pages -d docs/.vuepress/dist"
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.3.0",
@@ -24,6 +26,7 @@
     "vuepress-plugin-img-lazy": "^1.0.4"
   },
   "dependencies": {
+    "gh-pages": "^4.0.0",
     "vuepress-theme-reco": "^1.6.10"
   }
 }
