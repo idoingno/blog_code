@@ -8,8 +8,7 @@
   "scripts": {
     "dev": "vuepress dev docs --temp .temp",
     "build": "vuepress build docs",
-    "predeploy": "pnpm run build", 
-    "deploy": "gh-pages -d docs/.vuepress/dist"
+    "deploy": "pnpm run build && gh-pages -d docs/.vuepress/dist"
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.3.0",
@@ -27,6 +26,7 @@
   },
   "dependencies": {
     "gh-pages": "^4.0.0",
+    "markdown-it-katex": "^2.0.3",
     "vuepress-theme-reco": "^1.6.10"
   }
 }
