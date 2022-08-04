@@ -12,7 +12,10 @@ module.exports = {
             }
         ],
         ['link', { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css' }],
-        ['link', { rel: "stylesheet", href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css" }]
+        ['link', { rel: "stylesheet", href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css" }],
+        ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1' }],
+        // 引入自定义js
+        ["script", {"language": "javascript", "type": "text/javascript", "src": "/js/pgmanor-self.js"}]
     ],
     title: '如三秋兮',
     description: '独上高楼,望尽天涯路',
@@ -29,11 +32,14 @@ module.exports = {
         nav: navConfig,
         lastUpdated: 'Last Updated', // string | boolean
         sidebar: 'auto',
+        noFoundPageByTencent: false,
+        searchPlaceholder: "按下 𝑺 搜索", // 可选：搜索栏占位文本
     },
     markdown: {
-        config: md => {
+        extendMarkdown: md => {
             md.set({html: true})
             md.use(require("markdown-it-katex"))
-        }
+        },
+        externalLinks: { target: '_blank', rel: 'nofollow noopener noreferrer' }
     },
 }

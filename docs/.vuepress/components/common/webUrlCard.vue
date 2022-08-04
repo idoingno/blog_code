@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <div v-for="item in typeData" class="item">
+    <div v-for="(item,index) in typeData" class="item" :key="index">
       <p class="list">
         <a :href="item.href" target="_blank" :title="item.text">
           <img

@@ -469,3 +469,249 @@ function rot13(str) {
 }
 rot13("SERR PBQR PNZC");
 ```
+
+
+## 链表反转
+
+假设链表 1 → 2 → 3 → 4 → ∅， 更改为 ∅ ← 1 ← 2 ← 3 ← 4 
+
+遍历链表时，将当前节点的next指针指向前一个节点。在更改引用之前，需要存储后一个节点。最后返回新的引用头
+
+```js
+function Solution(head) {
+  let prev = null;
+  let curr = head;
+  while(head) {
+    const next = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = next;
+  }
+  return prev
+}
+```
+
+复杂度分析
+
+- 时间复杂度：<common-latexDisplay> O(n) </common-latexDisplay>，其中 `n` 是链表的长度。需要遍历链表一次。
+- 空间复杂度：<common-latexDisplay> O(1) </common-latexDisplay>。
+
+
+## 环形链表
+
+**解法一**
+
+1. 遍历所有节点，每次遍历到一个节点时，判断该节点此前是否被访问过。
+2. 使用哈希表来存储所有已经访问过的节点。每次我们到达一个节点，如果该节点已经存在于哈希表中，则说明该链表是环形链表，否则就将该节点加入哈希表中。重复这一过程，直到我们遍历完整个链表即可。
+
+**解法二**
+
+1. 使用两个指针， `fast`和`slow`, 起始位置位于链表的头部
+2. `slow` 指针每次向后移动一个位置，`fast`指针每次向后移动两个位置
+3. 如果存在环，则`fast`指针最终将再次与`slow`指针在环中相遇
+
+```js
+// 解法一
+var hasCycle = function(head) {
+  const visited = new Set();
+
+  while (head !== null) {
+      if (visited.has(head)) {
+          return head;
+      }
+      visited.add(head);
+      head = head.next;
+  }
+  return null;
+}
+
+// 解法二
+// 判断是否有环
+var hasCycle = function(head) {
+  //设置快慢指针
+  let slow = head;
+  let fast = head;
+  //如果没有环，则快指针会抵达终点，否则继续移动双指针
+  while (fast && fast.next) {
+      slow = slow.next;
+      fast = fast.next.next;
+      //快慢指针相遇，说明含有环
+      if (slow == fast) {
+          return true;
+      }
+  }
+  return false;
+};
+```
+
+## 合并有序链表
+
+**解法一 迭代**
+
+用迭代的方法来实现上述算法。当 `list1` 和 `list2` 都不是空链表时，判断 `list1` 和 `list2` 哪一个链表的头节点的值更小，将较小值的节点添加到结果里，当一个节点被添加到结果里之后，将对应链表中的节点向后移一位。
+
+**复杂度分析**
+
+- 时间复杂度：<common-latexDisplay>O(n + m)</common-latexDisplay>，其中 `n` 和 `m` 分别为两个链表的长度。因为每次循环迭代中，`list1` 和 `list2` 只有一个元素会被放进合并链表中， 因此 `while` 循环的次数不会超过两个链表的长度之和。所有其他操作的时间复杂度都是常数级别的，因此总的时间复杂度为 <common-latexDisplay>O(n + m)</common-latexDisplay>。
+- 空间复杂度：<common-latexDisplay>O(1)</common-latexDisplay>。我们只需要常数的空间存放若干变量。
+
+**解法二 递归**
+
+如果 `list1` 或者 `list2` 一开始就是空链表 ，那么没有任何操作需要合并，所以我们只需要返回非空链表。否则，我们要判断 `list1` 和 `list2` 哪一个链表的头节点的值更小，然后递归地决定下一个添加到结果里的节点。如果两个链表有一个为空，递归结束。
+
+**复杂度分析**
+
+- 时间复杂度：<common-latexDisplay>O(n + m)</common-latexDisplay>，其中 `n` 和 `m` 分别为两个链表的长度。因为每次调用递归都会去掉 `l1` 或者 `l2` 的头节点（直到至少有一个链表为空），函数 `mergeTwoList` 至多只会递归调用每个节点一次。因此，时间复杂度取决于合并后的链表长度，即 O(n+m)。
+- 空间复杂度：<common-latexDisplay>O(n + m)</common-latexDisplay>，其中 `n` 和 `m` 分别为两个链表的长度。递归调用 `mergeTwoLists` 函数时需要消耗栈空间，栈空间的大小取决于递归调用的深度。结束递归调用时 `mergeTwoLists` 函数最多调用 `n+m` 次，因此空间复杂度为 O(n+m)。
+
+
+```js
+// 解法一
+var mergeTwoLists = function(list1, list2) {
+    const prehead = new ListNode(null);
+
+    let prev = prehead;
+    while(list1 && list2) {
+        if(list1.val <= list2.val) {
+            prev.next = list1
+            list1 = list1.next
+        } else {
+            prev.next = list2
+            list2 = list2.next
+        }
+        prev = prev.next
+    }
+    prev.next = list1 === null ? list2 : list1;
+    return prehead.next
+};
+
+// 解法二
+var mergeTwoLists = function(list1, list2) {
+  if(!list1) return list2;
+  if(!list2) return list1;
+
+  if(list1.val < list2.val) {
+    list1.next = mergeTwoLists(list1.next, list2)
+    return list1
+  } else {
+    list2.next = mergeTwoLists(list1, list2.next)
+    return list2
+  }
+};
+```
+
+
+## 删除链表的倒数第N个结点
+
+**解法一 快慢指针**
+
+由于需要找到倒数第 `n` 个节点，因此可以使用两个指针 `fast` 和 `slow` 同时对链表进行遍历，并且 `fast` 比 `slow` 超前 `n` 个节点。当 `fast` 遍历到链表的末尾时，`slow` 就恰好处于倒数第 `n` 个节点。
+
+
+```js
+/**
+ * @param {ListNode} head
+ * @param {number} n
+ * @return {ListNode}
+ */
+var removeNthFromEnd = function(head, n) {
+    let slow = head, fast = head;
+    // 先让 fast 往后移 n 位
+    while(n--) {
+        fast = fast.next;
+    }
+
+    // 如果 n 和 链表中总结点个数相同，即要删除的是链表头结点时，fast 经过上一步已经到外面了
+    if(!fast) {
+        return head.next;
+    }
+
+    // 然后 快慢指针 一起往后遍历，当 fast 是链表最后一个结点时，此时 slow 下一个就是要删除的结点
+    while(fast.next) {
+        slow = slow.next;
+        fast = fast.next;
+    }
+    slow.next = slow.next.next;
+
+    return head;
+};
+```
+
+**解法二 计算链表长度**
+
+首先从头节点开始对链表进行一次遍历，得到链表的长度 `L`。随后再从头节点开始对链表进行一次遍历，当遍历到第 `L-n` 个节点时，它就是需要删除的节点。
+
+```js
+/**
+ * @param {ListNode} head
+ * @param {number} n
+ * @return {ListNode}
+ */
+var removeNthFromEnd = function(head, n) {
+    const prehead = new ListNode(null);
+    prehead.next = head;
+    let curr = prehead;
+    
+    let index = 0;
+    let glength = getLength(head)
+
+    while(curr.next) {
+        if(glength - n  === index) {
+            curr.next = curr.next.next
+        } else {
+            curr = curr.next
+        }
+        index++
+    }
+
+    return prehead.next
+
+    function getLength(head) {
+        let length = 0
+        while(head) {
+            length++
+            head = head.next
+        }
+        return length
+    }
+};
+```
+
+**复杂度分析(两个皆为)**
+
+- 时间复杂度：<common-latexDisplay>O(L)</common-latexDisplay>，其中 `L` 是链表的长度。
+- 空间复杂度：<common-latexDisplay>O(1)</common-latexDisplay>。
+
+
+## 求链表的中间结点
+
+**解法一 快慢指针法**
+
+用两个指针 `slow` 与 `fast` 一起遍历链表。`slow` 一次走一步，`fast` 一次走两步。那么当 `fast` 到达链表的末尾时，`slow` 必然位于中间。
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var middleNode = function (head) {
+  let slow = fast = head;
+
+  while(fast && fast.next) {
+      slow = slow.next
+      fast = fast.next.next
+  }
+  return slow
+```
+
+**复杂度分析**
+
+- 时间复杂度：<common-latexDisplay>O(N)</common-latexDisplay>，其中 `N` 是给定链表的结点数目。
+- 空间复杂度：<common-latexDisplay>O(1)</common-latexDisplay>，只需要常数空间存放 `slow` 和 `fast` 两个指针。

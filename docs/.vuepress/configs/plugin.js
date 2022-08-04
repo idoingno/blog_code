@@ -44,7 +44,8 @@ const plugins = [
             indexSuffix: '/',
             notFoundPath: '/404.html',
         },
-    ]
+    ],
+    ['fulltext-search'],
 ]
 
 
