@@ -168,8 +168,8 @@ if (head->next == null) {
 ## Tips
 
 精选了 5 个常见的链表操作用于练习
-- [ 单链表反转 - ](/fontend/Js/js-basic-algorithm/#链表反转) 
-- [ 链表中环的检测 - ](/fontend/Js/js-basic-algorithm/#环形链表)
-- [ 两个有序的链表合并 - ](/fontend/Js/js-basic-algorithm/#合并有序链表)
-- [ 删除链表倒数第N个结点 - ](/fontend/Js/js-basic-algorithm/#删除链表的倒数第n个结点)
-- [ 求链表的中间结点 - ](/fontend/Js/js-basic-algorithm/#求链表的中间结点)
+- [ 单链表反转 - ](/algorithm/js-basic-algorithm/#链表反转) 
+- [ 链表中环的检测 - ](/algorithm/js-basic-algorithm/#环形链表)
+- [ 两个有序的链表合并 - ](/algorithm/js-basic-algorithm/#合并有序链表)
+- [ 删除链表倒数第N个结点 - ](/algorithm/js-basic-algorithm/#删除链表的倒数第n个结点)
+- [ 求链表的中间结点 - ](/algorithm/js-basic-algorithm/#求链表的中间结点)

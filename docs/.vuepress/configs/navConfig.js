@@ -25,6 +25,7 @@ const navs = [{
             },
         ],
     },
+    { text: '算法', link: '/algorithm/' },
     // { text: '小程序', link: '/wechat/' },
     // { text: '面试', link: '/interview/' },
     // { text: '指南', link: '/guide/' },
